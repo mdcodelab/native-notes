@@ -1,10 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+dotenv.config();
+const { testConnection } = require('./config/database');
 
 // Load environment variables
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors()); // Pentru React Native
 app.use(express.json()); // Pentru a parsa JSON din request-uri
 app.use(express.urlencoded({ extended: true }));
+
 
 //for testing
 app.get("/", (req,res) => {
@@ -32,7 +33,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  await testConnection();
 });
 
