@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 const { testConnection } = require('./config/database');
+const noteRoutes = require("./routes/noteRoutes");
 
 // Load environment variables
 const app = express();
@@ -21,7 +22,7 @@ res.json({message: "Notes API is running", timeStamp: new Date().toISOString()})
 
 // Routes (le vom adăuga după)
 // app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/notes', require('./routes/notes'));
+app.use('/api/notes', noteRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
