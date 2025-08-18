@@ -44,9 +44,13 @@ export default function Notes() {
         setModalVisible(false);
     }
 
+    function deleteNote(id) {
+        setNotes((prevNotes) => prevNotes.filter(note => note.id !== id));
+    }
+
     return (
         <View style={Styles.container}>
-            <NoteList notes={notes}></NoteList>
+            <NoteList notes={notes} deleteNote={deleteNote}></NoteList>
             <TouchableOpacity style={Styles.button} onPress={() => setModalVisible(true)}>
                 <Text style={Styles.buttonText}>+ Add Note</Text>
             </TouchableOpacity>
