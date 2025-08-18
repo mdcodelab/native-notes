@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert} from "react-native";
 import React from "react";
 import { useRouter } from "expo-router";
 import NoteList from "../../componrnts/NoteList";
@@ -30,9 +30,9 @@ const Styles = StyleSheet.create({
 
 export default function Notes() {
     const [notes, setNotes] = React.useState([
-        { id: 1, title: "Note One" },
-        { id: 2, title: "Note Two" },
-        { id: 3, title: "Note Three" }
+        { id: "1", title: "Note One" },
+        { id: "2", title: "Note Two" },
+        { id: "3", title: "Note Three" }
     ]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [newNote, setNewNote] = React.useState("");
@@ -45,7 +45,22 @@ export default function Notes() {
     }
 
     function deleteNote(id) {
-        setNotes((prevNotes) => prevNotes.filter(note => note.id !== id));
+        window.alert("Are you sure you want to delete this note?");
+        setNotes(prevNotes => prevNotes.filter(note => note.id !== id));
+    // Alert.alert(
+    //     "Delete Note",
+    //     "Are you sure you want to delete this note?",
+    //     [
+    //         {
+    //             text: "Cancel",
+    //             style: "cancel"
+    //         },
+    //         {
+    //             text: "Delete",
+    //             style: "destructive",
+    //             onPress: () => setNotes(prevNotes => prevNotes.filter(note => note.id !== id))
+    //         }
+    //     ])
     }
 
     return (
