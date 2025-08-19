@@ -63,9 +63,20 @@ export default function Notes() {
     //     ])
     }
 
+    function updateNote(id, title) {
+        if(!title.trim()) {
+            window.alert("Note cannot be empty");
+            return;
+        };
+        setNotes(prevNotes => prevNotes.map(note => {
+            if(note.id !==id) return note;
+            return {...note, title} 
+        }))
+    };
+
     return (
         <View style={Styles.container}>
-            <NoteList notes={notes} deleteNote={deleteNote}></NoteList>
+            <NoteList notes={notes} deleteNote={deleteNote} onEdit={updateNote}></NoteList>
             <TouchableOpacity style={Styles.button} onPress={() => setModalVisible(true)}>
                 <Text style={Styles.buttonText}>+ Add Note</Text>
             </TouchableOpacity>

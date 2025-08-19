@@ -5,13 +5,14 @@ const Styles = StyleSheet.create({
 
 });
 
-function NoteList({notes, deleteNote}) {
+function NoteList({notes, deleteNote, onEdit}) {
   return (
     <View>
         <FlatList
                     data={notes}
                     keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (<NoteItem note={item} deleteNote={deleteNote}></NoteItem>
+                    renderItem={({ item }) => (<NoteItem note={item}
+                     deleteNote={deleteNote} onEdit={onEdit}></NoteItem>
                     )}
                 />
     </View>
