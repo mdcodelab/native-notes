@@ -1,91 +1,107 @@
-const prisma=require("../config/prisma");
-const app = express();
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
+const { PrismaClient } = require('@prisma/client');
+const { authenticateToken } = require('../middleware/authMiddleware');
 
+const prisma = new PrismaClient();
 
-// GET all notes
-router.get("/", async (req, res) => {
+// GET all notes for the authenticated user
+router.get("/", authenticateToken, async (req, res) => {
   try {
-    const notes = await prisma.note.findMany();
+    const notes = await prisma.note.findMany({
+      where: { userId: req.user.userId },
+      orderBy: { createdAt: 'desc' }
+    });
     res.json(notes);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch notes" });
+    console.error('Error fetching notes:', error);
+    res.status(500).json({ error: 'Failed to fetch notes' });
   }
 });
 
 //POST a note
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { title, content, userId } = req.body;
-    if (!title || !userId) {
-      return res.status(400).json({ error: "Title or userId are required" });
+    const { title, content } = req.body;
+    
+    if (!title || !content) {
+      return res.status(400).json({ error: 'Title and content are required' });
     }
 
     const newNote = await prisma.note.create({
       data: {
         title,
         content,
-        userId: parseInt(userId), // assures integer
-      },
+        userId: req.user.userId
+      }
     });
 
     res.status(201).json(newNote);
   } catch (error) {
-    console.error("Error creating note:", error);
-    res.status(500).json({ error: "Failed to create note" });
+    console.error('Error creating note:', error);
+    res.status(500).json({ error: 'Failed to create note' });
   }
 });
 
 //update a note
 // PUT update a note
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, async (req, res) => {
   try {
-    const noteId = parseInt(req.params.id);
+    const { id } = req.params;
     const { title, content } = req.body;
 
-    if (isNaN(noteId)) {
-      return res.status(400).json({ error: "Invalid note id" });
+    // Verifică dacă nota îi aparține utilizatorului
+    const note = await prisma.note.findUnique({
+      where: { id: parseInt(id) }
+    });
+
+    if (!note) {
+      return res.status(404).json({ error: 'Note not found' });
+    }
+
+    if (note.userId !== req.user.userId) {
+      return res.status(403).json({ error: 'Not authorized to update this note' });
     }
 
     const updatedNote = await prisma.note.update({
-      where: { id: noteId },
-      data: {
-        title,
-        content,
-      },
+      where: { id: parseInt(id) },
+      data: { title, content }
     });
 
     res.json(updatedNote);
   } catch (error) {
-    console.error("Error updating note:", error);
-    res.status(500).json({ error: "Failed to update note" });
+    console.error('Error updating note:', error);
+    res.status(500).json({ error: 'Failed to update note' });
   }
 });
 
 // DELETE a note
 // DELETE a note
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   try {
-    const noteId = parseInt(req.params.id);
+    const { id } = req.params;
 
-    if (isNaN(noteId)) {
-      return res.status(400).json({ error: "Invalid note id" });
-    }
-
-    const deletedNote = await prisma.note.delete({
-      where: { id: noteId },
+    // Verifică dacă nota îi aparține utilizatorului
+    const note = await prisma.note.findUnique({
+      where: { id: parseInt(id) }
     });
 
-    res.json({ message: "Note deleted successfully", deletedNote });
-  } catch (error) {
-    console.error("Error deleting note:", error);
-
-    if (error.code === "P2025") {
-      // P2025 = record not found în Prisma
-      return res.status(404).json({ error: "Note not found" });
+    if (!note) {
+      return res.status(404).json({ error: 'Note not found' });
     }
 
-    res.status(500).json({ error: "Failed to delete note" });
+    if (note.userId !== req.user.userId) {
+      return res.status(403).json({ error: 'Not authorized to delete this note' });
+    }
+
+    await prisma.note.delete({
+      where: { id: parseInt(id) }
+    });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting note:', error);
+    res.status(500).json({ error: 'Failed to delete note' });
   }
 });
 
