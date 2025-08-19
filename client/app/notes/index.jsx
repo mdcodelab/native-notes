@@ -3,6 +3,7 @@ import React from "react";
 import { useRouter } from "expo-router";
 import NoteList from "../../componrnts/NoteList";
 import AddModal from "../../componrnts/AddModal";
+import { useAuth } from "../../context/authContext";
 
 const Styles = StyleSheet.create({
     container: {
@@ -73,6 +74,20 @@ export default function Notes() {
             return {...note, title} 
         }))
     };
+
+    const router = useRouter();
+    const {user, loading, login, logout} = useAuth();
+    React.useEffect(()=> {
+        if(!user) {
+            router.replace("/auth");
+        }
+    }, [user]);
+
+    React.useEffect(()=> {
+        if(user) {
+            //fetch the notes
+        }
+    }, [user]);
 
     return (
         <View style={Styles.container}>
