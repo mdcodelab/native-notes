@@ -1,41 +1,48 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
-dotenv.config();
-const { testConnection } = require('./config/database');
-const noteRoutes = require("./routes/noteRoutes");
 
 // Load environment variables
+dotenv.config();
+
+const { testConnection } = require('./config/database');
+const noteRoutes = require("./routes/noteRoutes");
+const authRoutes = require("./routes/authRoutes");
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors()); // Pentru React Native
-app.use(express.json()); // Pentru a parsa JSON din request-uri
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true // Permite trimiterea cookie-urilor
+}));
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-
-//for testing
-app.get("/", (req,res) => {
-res.json({message: "Notes API is running", timeStamp: new Date().toISOString()})
-});
-
-// Routes (le vom adăuga după)
-// app.use('/api/auth', require('./routes/auth'));
+// Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
+
+// Test route
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Notes API is running", 
+    timeStamp: new Date().toISOString() 
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'production' ? {} : err.message
-  });
+  res.status(500).json({ message: 'Something went wrong!' });
 });
 
 // Start server
 app.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
   await testConnection();
 });
-
