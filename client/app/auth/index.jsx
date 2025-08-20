@@ -93,7 +93,7 @@ export default function Auth() {
         try {
             console.log('Sending registration request...');
             const response = await axios.post(
-                'http://localhost:5000/api/auth/register',
+                'http://localhost:3001/api/auth/register',
                 { email, password, confirmPassword },
                 { 
                     withCredentials: true,
@@ -155,7 +155,7 @@ export default function Auth() {
             setIsLoading(true);
             setError("");
             
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post('http://localhost:3001/api/auth/login', {
                 email,
                 password
             }, {
@@ -167,6 +167,8 @@ export default function Auth() {
                 text1: 'Success',
                 text2: 'Login successful!'
             });
+
+            console.log('Login successful, navigating to /notes');
 
             router.replace('/notes');
 
