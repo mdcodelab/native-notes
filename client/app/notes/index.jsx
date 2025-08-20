@@ -79,25 +79,32 @@ export default function Notes() {
             console.error("Error adding note:", error);
         }
     }
+    
 
-    function deleteNote(id) {
+    async function deleteNote(id) {
         window.alert("Are you sure you want to delete this note?");
-        setNotes(prevNotes => prevNotes.filter(note => note.id !== id));
-    // Alert.alert(
-    //     "Delete Note",
-    //     "Are you sure you want to delete this note?",
-    //     [
-    //         {
-    //             text: "Cancel",
-    //             style: "cancel"
-    //         },
-    //         {
-    //             text: "Delete",
-    //             style: "destructive",
-    //             onPress: () => setNotes(prevNotes => prevNotes.filter(note => note.id !== id))
-    //         }
-    //     ])
+        try {
+            const response = await axios.delete(`http://localhost:3001/api/notes/${id}`);
+            setNotes((prevNotes) => prevNotes.filter(note => note.id !==id));
+             // Alert.alert(
+                // //     "Delete Note",
+                // //     "Are you sure you want to delete this note?",
+                // //     [
+                // //         {
+                // //             text: "Cancel",
+                // //             style: "cancel"
+                // //         },
+                // //         {
+                // //             text: "Delete",
+                // //             style: "destructive",
+                // //             onPress: () => setNotes(prevNotes => prevNotes.filter(note => note.id !== id))
+                // //         }
+                // //     ])
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
     }
+        
 
     function updateNote(id, title) {
         if(!title.trim()) {
