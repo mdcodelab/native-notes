@@ -93,11 +93,13 @@ router.post("/login", async (req, res) => {
 // LOGOUT
 router.post("/logout", (req, res) => {
   try {
-    res.clearCookie("token", {
+    res.cookie("token", "expired", {
+      expires: new Date(0),
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
       path: "/",
+      maxAge: 0
     });
     res.json({ message: "Logged out successfully!" });
   } catch (error) {

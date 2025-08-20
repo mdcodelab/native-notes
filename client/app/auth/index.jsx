@@ -107,9 +107,7 @@ export default function Auth() {
             
             console.log('Registration successful:', response.data);
             Toast.show({
-                type: 'success',
-                text1: 'Registration successful!',
-                text2: 'You can now log in.'
+                text1: 'Registration successful!'
             });
             setForRegistering(false);
         } catch (error) {
@@ -177,8 +175,7 @@ export default function Auth() {
                 
                 Toast.show({
                     type: 'success',
-                    text1: 'Success',
-                    text2: 'Login successful!',
+                    text1: 'Login successful!',
                     position: 'top',
                     visibilityTime: 2000
                 });

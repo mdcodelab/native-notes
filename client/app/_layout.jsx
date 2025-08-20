@@ -51,8 +51,8 @@ export default function RootLayout() {
               width: '90%',
               alignSelf: 'center',
             }}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>{props.text1}</Text>
-              {props.text2 && <Text style={{ color: 'white' }}>{props.text2}</Text>}
+              <Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>{props.text1}</Text>
+              {props.text2 && <Text style={{ color: 'white', textAlign: 'center' }}>{props.text2}</Text>}
             </View>
           ),
           error: (props) => (
