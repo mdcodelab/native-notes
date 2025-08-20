@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import NoteList from "../../componrnts/NoteList";
 import AddModal from "../../componrnts/AddModal";
 import { useAuth } from "../../context/authContext";
+import axios from "axios";
 
 const Styles = StyleSheet.create({
     container: {
@@ -30,19 +31,53 @@ const Styles = StyleSheet.create({
 });
 
 export default function Notes() {
-    const [notes, setNotes] = React.useState([
-        { id: "1", title: "Note One" },
-        { id: "2", title: "Note Two" },
-        { id: "3", title: "Note Three" }
-    ]);
+    const [notes, setNotes] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [newNote, setNewNote] = React.useState("");
+    const [isLoading, setIsLoading] = React.useState(false);
+    //display all notes
+    async function fetchNotes() {
+        try {
+            setIsLoading(true);
+            const response = await axios.get('http://localhost:3001/api/notes', {
+                withCredentials: true});
+            setNotes(response.data);
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.error('Error fetching notes:', error);
+        } 
+    }
 
-    function addNote() {
-        if (newNote.trim() === "") return;
-        setNotes((prevNotes)=>[...prevNotes, {id: Date.now().toString(), title: newNote} ] )
-        setNewNote("");
-        setModalVisible(false);
+    const router = useRouter();
+    const {user} = useAuth();
+    React.useEffect(()=> {
+        if(!user) {
+            router.replace("/auth");
+        }
+    }, [user]);
+
+    React.useEffect(()=> {
+        if(user) {
+            fetchNotes();
+            //fetch the notes
+        }
+    }, [user]);
+    
+    //add a new note
+    async function addNote() {
+        console.log("NEW NOTE", newNote);
+        if (!newNote.trim()) return;
+        try {
+            const response = await axios.post("http://localhost:3001/api/notes", {title: newNote},
+                {withCredentials: true});
+            console.log(response.data);
+            setNotes((prevNotes) => [...prevNotes, {id: response.data.id, title: response.data.title}]);
+            setNewNote("");
+            setModalVisible(false);
+        } catch (error) {
+            console.error("Error adding note:", error);
+        }
     }
 
     function deleteNote(id) {
@@ -75,19 +110,6 @@ export default function Notes() {
         }))
     };
 
-    const router = useRouter();
-    const {user} = useAuth();
-    React.useEffect(()=> {
-        if(!user) {
-            router.replace("/auth");
-        }
-    }, [user]);
-
-    React.useEffect(()=> {
-        if(user) {
-            //fetch the notes
-        }
-    }, [user]);
 
     return (
         <View style={Styles.container}>

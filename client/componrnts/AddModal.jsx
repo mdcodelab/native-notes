@@ -45,18 +45,26 @@ modalOverlay: {
         width: "100%",
     },
     modalButton: {
-        backgroundColor: "#ff8c00",
+    paddingVertical: 12,
+    paddingVertical: 12,
+        backgroundColor:  "#4CAF50",
         padding: 10,
         borderRadius: 5,
         flex: 1,
         marginHorizontal: 5,
         alignItems: "center",
         justifyContent: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
+    },
+    modalButtonCancel: {
+        paddingVertical: 12,
+    paddingVertical: 12,
+        backgroundColor:  "grey",
+        padding: 10,
+        borderRadius: 5,
+        flex: 1,
+        marginHorizontal: 5,
+        alignItems: "center",
+        justifyContent: "center",
     },
     buttonModalText: {
         color: "#fff",
@@ -65,7 +73,8 @@ modalOverlay: {
     }
 })
 
-function AddModal({modalVisible, setModalVisible, setNewNote, addNote, newNote}) {
+function AddModal({modalVisible, setModalVisible, 
+    setNewNote, addNote, newNote}) {
   return (
     <Modal
                     animationType="slide"
@@ -84,7 +93,7 @@ function AddModal({modalVisible, setModalVisible, setNewNote, addNote, newNote})
                                 onChangeText={(text) => setNewNote(text)}
                             />
                             <View style={Styles.modalButtons}>
-                                <TouchableOpacity style={Styles.modalButton} onPress={() => setModalVisible(false)}>
+                                <TouchableOpacity style={Styles.modalButtonCancel} onPress={() => setModalVisible(false)}>
                                     <Text style={Styles.buttonModalText}>Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={Styles.modalButton} onPress={addNote}>

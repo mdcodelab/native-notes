@@ -22,19 +22,19 @@ router.get("/", authenticateToken, async (req, res) => {
 // POST a note
 router.post("/", authenticateToken, async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title} = req.body;
 
-    if (!title || !content) {
-      return res.status(400).json({ error: "Title and content are required" });
+    if (!title) {
+      return res.status(400).json({ error: "Title is required" });
     }
 
     const newNote = await prisma.note.create({
       data: {
         title,
-        content,
         userId: req.user.userId,
       },
     });
+    console.log(newNote);
 
     res.status(201).json(newNote);
   } catch (error) {
