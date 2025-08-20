@@ -75,16 +75,17 @@ export default function Notes() {
             setNotes((prevNotes) => [...prevNotes, {id: response.data.id, title: response.data.title}]);
             setNewNote("");
             setModalVisible(false);
+            await fetchNotes();
         } catch (error) {
             console.error("Error adding note:", error);
         }
     }
-    
+
 
     async function deleteNote(id) {
         window.alert("Are you sure you want to delete this note?");
         try {
-            const response = await axios.delete(`http://localhost:3001/api/notes/${id}`);
+            const response = await axios.delete(`http://localhost:3001/api/notes/${id}`, {withCredentials: true});
             setNotes((prevNotes) => prevNotes.filter(note => note.id !==id));
              // Alert.alert(
                 // //     "Delete Note",

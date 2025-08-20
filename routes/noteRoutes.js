@@ -47,7 +47,7 @@ router.post("/", authenticateToken, async (req, res) => {
 router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title} = req.body;
 
     const note = await prisma.note.findUnique({
       where: { id: parseInt(id) },
@@ -63,7 +63,7 @@ router.put("/:id", authenticateToken, async (req, res) => {
 
     const updatedNote = await prisma.note.update({
       where: { id: parseInt(id) },
-      data: { title, content },
+      data: { title },
     });
 
     res.json(updatedNote);
