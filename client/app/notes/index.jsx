@@ -13,7 +13,7 @@ const Styles = StyleSheet.create({
         backgroundColor: "#fff"
     },
     button: {
-        backgroundColor: "#ff8c00",
+        backgroundColor: "#4CAF50",
         position: "absolute",
         bottom: 20,
         right: 20,
@@ -107,15 +107,21 @@ export default function Notes() {
     }
         
 
-    function updateNote(id, title) {
+    async function updateNote(id, title) {
         if(!title.trim()) {
             window.alert("Note cannot be empty");
             return;
         };
-        setNotes(prevNotes => prevNotes.map(note => {
-            if(note.id !==id) return note;
-            return {...note, title} 
-        }))
+        try {
+            const response = await axios.put(`http://localhost:3001/api/notes/${id}`, 
+                {title}, {withCredentials: true});
+                setNotes((prevNotes) => prevNotes.map((note) => {
+                    if(note.id !==id) return note;
+                    return {...note, title}
+                }))
+        } catch (error) {
+            console.error("Error updating note:", error);
+        }
     };
 
 
