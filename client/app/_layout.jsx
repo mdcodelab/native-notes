@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import { Platform, View, Text } from 'react-native';
 import { AuthProvider } from "../context/authContext";
+import Logout from "../componrnts/Logout";
 
 export default function RootLayout() {
   return (
@@ -24,6 +25,7 @@ export default function RootLayout() {
               paddingTop: 10,
               backgroundColor: "#fff",
             },
+            headerRight: () => <Logout/>
           }}
         >
           <Stack.Screen name="index" options={{ title: "Home" }} />

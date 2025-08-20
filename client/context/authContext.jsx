@@ -7,23 +7,10 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    
-    const login = async (email, password) => {
-        
-    };
-
-    const logout = async () => {
-    };
-
-    const value = {
-        user,
-        loading,
-        login,
-        logout
-    };
-
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider value={
+            {user, setUser, loading, setLoading}
+        }>
             {children}
         </AuthContext.Provider>
     );

@@ -76,7 +76,7 @@ export default function Notes() {
     };
 
     const router = useRouter();
-    const {user, loading, login, logout} = useAuth();
+    const {user} = useAuth();
     React.useEffect(()=> {
         if(!user) {
             router.replace("/auth");

@@ -73,6 +73,7 @@ export default function Auth() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
+    const { setUser, setLoading } = useAuth();
 
     const handleRegister = async (email, password, confirmPassword) => {
         setIsLoading(true);
@@ -155,23 +156,37 @@ export default function Auth() {
             setIsLoading(true);
             setError("");
             
-            const response = await axios.post('http://localhost:3001/api/auth/login', {
-                email,
-                password
-            }, {
-                withCredentials: true
+            const response = await axios({
+                method: 'post',
+                url: 'http://localhost:3001/api/auth/login',
+                data: { email, password },
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                timeout: 10000
             });
 
-            Toast.show({
-                type: 'success',
-                text1: 'Success',
-                text2: 'Login successful!'
-            });
+            console.log('Login response status:', response.status);
+            console.log('Login response data:', response.data);
 
-            console.log('Login successful, navigating to /notes');
+            if (response.data && response.data.user) {
+                console.log('User data received:', response.data.user);
+                setUser(response.data.user);
+                
+                Toast.show({
+                    type: 'success',
+                    text1: 'Success',
+                    text2: 'Login successful!',
+                    position: 'top',
+                    visibilityTime: 2000
+                });
 
-            router.replace('/notes');
-
+                router.replace('/notes');
+            } else {
+                throw new Error('No user data received');
+            }
         } catch (error) {
             console.error('Login error:', error);
             const errorMessage = error.response?.data?.error || 'Login failed';
