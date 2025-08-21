@@ -27,6 +27,13 @@ const Styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
+    noNotesText: {
+        textAlign: "center",
+        marginTop: 20,
+        color: "#a555",
+        fontSize: 18,
+        fontWeight: "bold"
+    },
     
 });
 
@@ -127,7 +134,14 @@ export default function Notes() {
 
     return (
         <View style={Styles.container}>
-            <NoteList notes={notes} deleteNote={deleteNote} onEdit={updateNote}></NoteList>
+            {notes.length > 0 ? (
+                <NoteList notes={notes} deleteNote={deleteNote} 
+                onEdit={updateNote}></NoteList>
+            ) : 
+            (
+                <Text style={Styles.noNotesText}>No notes found</Text>
+            )}
+
             <TouchableOpacity style={Styles.button} onPress={() => setModalVisible(true)}>
                 <Text style={Styles.buttonText}>+ Add Note</Text>
             </TouchableOpacity>
